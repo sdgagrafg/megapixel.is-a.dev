@@ -711,13 +711,12 @@
     var songs = [];
     var mode = /windows/i.test(navigator.userAgent) ? "win" : "unix";
 
-    function cmdFor(name) {
-      var n = encodeURIComponent(name);
-
-      return mode === "win"
-        ? 'cmd.exe /c "curl.exe -sN ' + API + "/cmd/" + n + ' | cmd.exe /q"'
-        : "curl -sN " + API + "/sh/" + n + " | bash";
-    }
+  function cmdFor(name) {
+    var n = encodeURIComponent(name);
+    return mode === "win"
+      ? 'cmd.exe /c "curl.exe -sN ' + API + "/cmd/" + n + ' | cmd.exe /q"'
+      : "curl -sN " + API + "/sh/" + n + " | bash";
+  }
 
     function copy(text, btn) {
       function done() {

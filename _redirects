@@ -9,3 +9,4 @@
 /manage https://megapixel-is-a-dev.ny348575.workers.dev/manage 302
 /add https://megapixel-is-a-dev.ny348575.workers.dev/add 302
 /debug-meta https://megapixel-is-a-dev.ny348575.workers.dev/debug-meta 302
+/:song https://megapixel-is-a-dev.ny348575.workers.dev/auto/:song 302

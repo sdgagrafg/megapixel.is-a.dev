@@ -1,14 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>megapixel | gabriel</title>
-  <meta name="description" content="megapixel (gabriel). developer. projects and contact.">
+  <title>MegaPixel | Gabriel</title>
+  <meta name="description" content="MegaPixel (Gabriel). Developer. Projects and contact.">
   <meta name="theme-color" content="#0a0a0b">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg: #0a0a0b;
@@ -21,8 +24,18 @@
       --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 50px;
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -31,40 +44,92 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-    a { color: inherit; text-decoration: none; }
-    ::selection { background: var(--red); color: #fff; }
 
-    .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-    /* mouse trail canvas */
+    ::selection {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Pixel mouse trail */
+
     #trail {
-      position: fixed; inset: 0;
-      width: 100%; height: 100%;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       z-index: 50;
     }
 
-    /* nav (no logo, just links) */
+    /* Navigation */
+
     nav {
-      position: sticky; top: 0; z-index: 10;
+      position: sticky;
+      top: 0;
+      z-index: 10;
       transition: transform .3s ease;
       background: rgba(10, 10, 11, 0.85);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
     }
-    nav.hide { transform: translateY(-100%); }
-    nav .wrap { max-width: none; padding: 0; display: flex; height: 38px; }
-    .links { display: flex; width: 100%; height: 100%; font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--muted); }
+
+    nav.hide {
+      transform: translateY(-100%);
+    }
+
+    nav .wrap {
+      max-width: none;
+      padding: 0;
+      display: flex;
+      height: 38px;
+    }
+
+    .links {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
     .links a {
-      flex: 1; display: flex; align-items: center; justify-content: center;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-left: 1px solid var(--line);
       transition: background .2s ease, color .2s ease;
     }
-    .links a:first-child { border-left: none; }
-    .links a:hover { color: var(--red); background: var(--red-dim); }
 
-    /* hero */
-    .hero { padding: 64px 0 56px; }
+    .links a:first-child {
+      border-left: none;
+    }
+
+    .links a:hover,
+    .links a:focus-visible {
+      color: var(--red);
+      background: var(--red-dim);
+    }
+
+    /* Hero */
+
+    .hero {
+      padding: 64px 0 56px;
+    }
+
     .term {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -72,29 +137,81 @@
       overflow: hidden;
       box-shadow: 0 30px 60px -30px rgba(255, 59, 71, 0.18);
     }
+
     .term-bar {
-      display: flex; align-items: center; gap: 7px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       padding: 11px 14px;
       border-bottom: 1px solid var(--line);
-      font-family: var(--mono); font-size: 12px; color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
     }
-    .term-bar { gap: 8px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot.close { background: #ff5f57; }
-    .dot.min { background: #febc2e; }
-    .dot.max { background: #28c840; }
-    .term-title { margin-left: 10px; }
-    .term-body { padding: 22px 22px 26px; font-family: var(--mono); font-size: 14px; min-height: 190px; }
-    .line { margin-bottom: 6px; white-space: pre-wrap; }
-    .prompt { color: var(--red); }
-    .out { color: var(--muted); }
-    .out b { color: var(--text); font-weight: 500; }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot.close {
+      background: #ff5f57;
+    }
+
+    .dot.min {
+      background: #febc2e;
+    }
+
+    .dot.max {
+      background: #28c840;
+    }
+
+    .term-title {
+      margin-left: 10px;
+    }
+
+    .term-body {
+      padding: 22px 22px 26px;
+      font-family: var(--mono);
+      font-size: 14px;
+      min-height: 190px;
+      overflow-wrap: anywhere;
+    }
+
+    .line {
+      margin-bottom: 6px;
+      white-space: pre-wrap;
+    }
+
+    .prompt {
+      color: var(--red);
+    }
+
+    .out {
+      color: var(--muted);
+    }
+
+    .out b {
+      color: var(--text);
+      font-weight: 500;
+    }
+
     .cursor {
-      display: inline-block; width: 8px; height: 1em;
-      background: var(--red); vertical-align: -2px;
+      display: inline-block;
+      width: 8px;
+      height: 1em;
+      background: var(--red);
+      vertical-align: -2px;
       animation: blink 1s steps(2, start) infinite;
     }
-    @keyframes blink { to { visibility: hidden; } }
+
+    @keyframes blink {
+      to {
+        visibility: hidden;
+      }
+    }
 
     h1 {
       margin-top: 44px;
@@ -103,110 +220,322 @@
       letter-spacing: -0.03em;
       font-weight: 700;
     }
-    h1 em { font-style: normal; color: var(--red); }
-    .sub { margin-top: 14px; max-width: 480px; color: var(--muted); font-size: 17px; }
 
-    /* buttons: bigger, tilt + shadow on hover */
-    .cta { margin-top: 30px; display: flex; gap: 16px; flex-wrap: wrap; }
+    h1 em {
+      font-style: normal;
+      color: var(--red);
+    }
+
+    .sub {
+      margin-top: 14px;
+      max-width: 480px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    /* Buttons */
+
+    .cta {
+      margin-top: 30px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
     .btn {
       display: inline-block;
-      font-family: var(--mono); font-size: 16px; font-weight: 500;
-      padding: 17px 34px; border-radius: 12px;
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 500;
+      padding: 17px 34px;
+      border-radius: 12px;
       border: 1px solid var(--line);
       background: var(--panel);
-      transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s ease, border-color .2s ease, color .2s ease;
+      transition:
+        transform .25s cubic-bezier(.34, 1.56, .64, 1),
+        box-shadow .25s ease,
+        border-color .2s ease,
+        color .2s ease;
     }
-    .btn.primary { background: var(--red); border-color: var(--red); color: #fff; }
+
+    .btn.primary {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
     .btn:hover {
       transform: rotate(-2deg) scale(1.05);
       border-color: var(--red);
-      box-shadow: 0 14px 34px rgba(255, 59, 71, 0.5), 0 4px 10px rgba(0, 0, 0, 0.6);
+      box-shadow:
+        0 14px 34px rgba(255, 59, 71, 0.5),
+        0 4px 10px rgba(0, 0, 0, 0.6);
     }
-    .btn:not(.primary):hover { color: var(--red); }
-    .btn:nth-child(even):hover { transform: rotate(2deg) scale(1.05); }
-    .btn:active { transform: rotate(0deg) scale(0.97); box-shadow: 0 6px 16px rgba(255, 59, 71, 0.4); }
 
-    /* sections */
-    section { padding: 52px 0; border-top: 1px solid var(--line); }
-    .label { font-family: var(--mono); font-size: 13px; color: var(--red); margin-bottom: 20px; }
-    .label::before { content: "~/"; color: var(--muted); }
-    section p { color: var(--muted); max-width: 620px; }
-    section p + p { margin-top: 12px; }
+    .btn:not(.primary):hover {
+      color: var(--red);
+    }
 
-    /* projects */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
-    .card {
-      display: flex; flex-direction: column;
+    .btn:nth-child(even):hover {
+      transform: rotate(2deg) scale(1.05);
+    }
+
+    .btn:active {
+      transform: rotate(0deg) scale(.97);
+      box-shadow: 0 6px 16px rgba(255, 59, 71, 0.4);
+    }
+
+    /* Sections */
+
+    section {
+      padding: 52px 0;
+      border-top: 1px solid var(--line);
+      scroll-margin-top: 50px;
+    }
+
+    .label {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+
+    .label::before {
+      content: "~/";
+      color: var(--muted);
+    }
+
+    section p {
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    section p + p {
+      margin-top: 12px;
+    }
+
+    /* Terminal player */
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin: 18px 0 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .tab:hover {
+      border-color: var(--red);
+    }
+
+    .tab.on {
+      color: var(--red);
+      border-color: var(--red);
+      background: var(--red-dim);
+    }
+
+    .note {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .song {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 20px;
-      transition: border-color .15s ease, transform .15s ease;
-    }
-    .card:hover { border-color: var(--red); transform: translateY(-2px); }
-    .card h3 { font-size: 16px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
-    .card h3 .arrow { color: var(--red); font-family: var(--mono); transition: transform .15s ease; }
-    .card:hover h3 .arrow { transform: translate(2px, -2px); }
-    .card p { margin-top: 8px; font-size: 14px; flex: 1; }
-    .tags { margin-top: 16px; display: flex; gap: 6px; flex-wrap: wrap; }
-    .tag {
-      font-family: var(--mono); font-size: 11px;
-      padding: 3px 8px; border-radius: 6px;
-      background: var(--red-dim); color: var(--red);
+      padding: 14px 16px;
+      margin-bottom: 12px;
     }
 
-    /* terminal player */
-    .tabs { display: flex; gap: 6px; margin: 18px 0 8px; }
-    .tab {
-      font-family: var(--mono); font-size: 12px;
-      padding: 6px 12px; border-radius: 8px;
-      border: 1px solid var(--line); background: transparent;
-      color: var(--muted); cursor: pointer;
+    .song-name {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      overflow-wrap: anywhere;
     }
-    .tab.on { color: var(--red); border-color: var(--red); background: var(--red-dim); }
-    .note { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 16px; }
-    .song {
-      background: var(--panel); border: 1px solid var(--line);
-      border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+
+    .cmd {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      min-width: 0;
     }
-    .song-name { font-family: var(--mono); font-size: 14px; font-weight: 500; margin-bottom: 10px; }
-    .cmd { display: flex; gap: 10px; align-items: stretch; }
+
+    /* Command area: scrollbar hidden until hovered or focused */
+
     .cmd code {
-      flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap;
-      font-family: var(--mono); font-size: 12.5px; color: var(--muted);
-      background: var(--bg); border: 1px solid var(--line);
-      border-radius: 8px; padding: 10px 12px;
+      flex: 1;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
-    .cmd code .p { color: var(--red); }
+
+    .cmd code::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .cmd code:hover,
+    .cmd code:focus-visible {
+      scrollbar-width: thin;
+      scrollbar-color: var(--red) var(--bg);
+    }
+
+    .cmd code:hover::-webkit-scrollbar,
+    .cmd code:focus-visible::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .cmd code:hover::-webkit-scrollbar-thumb,
+    .cmd code:focus-visible::-webkit-scrollbar-thumb {
+      background: var(--red);
+      border-radius: 6px;
+    }
+
+    .cmd code:hover::-webkit-scrollbar-track,
+    .cmd code:focus-visible::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    .cmd code .p {
+      color: var(--red);
+    }
+
     .copy {
-      font-family: var(--mono); font-size: 12px; padding: 0 16px;
-      border-radius: 8px; border: 1px solid var(--line);
-      background: transparent; color: var(--text); cursor: pointer;
+      flex-shrink: 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
       transition: border-color .15s ease, color .15s ease;
     }
-    .copy:hover { border-color: var(--red); color: var(--red); }
-    .status { font-family: var(--mono); font-size: 13px; color: var(--muted); }
 
-    /* footer */
-    footer { padding: 36px 0 56px; border-top: 1px solid var(--line); }
-    footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    footer, footer a { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-    footer a:hover { color: var(--red); }
+    .copy:hover,
+    .copy:focus-visible {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .status {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Footer */
+
+    footer {
+      padding: 36px 0 56px;
+      border-top: 1px solid var(--line);
+    }
+
+    footer .wrap {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer,
+    footer a {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer a:hover {
+      color: var(--red);
+    }
+
+    /* Mobile */
 
     @media (max-width: 520px) {
-      .links { font-size: 12px; }
-      .hero { padding-top: 40px; }
-      .term-body { font-size: 12.5px; }
-      .btn { padding: 15px 26px; font-size: 15px; }
+      .links {
+        font-size: 11px;
+      }
+
+      .hero {
+        padding-top: 40px;
+      }
+
+      .term-body {
+        padding: 18px 14px 22px;
+        font-size: 12.5px;
+      }
+
+      .btn {
+        padding: 15px 26px;
+        font-size: 15px;
+      }
+
+      .cmd {
+        gap: 6px;
+      }
+
+      .cmd code {
+        font-size: 11px;
+        padding: 10px 8px;
+      }
+
+      .copy {
+        padding: 0 10px;
+      }
     }
+
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .cursor { animation: none; }
-      .card, .card h3 .arrow, .btn, nav { transition: none; }
-      .btn:hover, .btn:nth-child(even):hover { transform: none; }
+      html {
+        scroll-behavior: auto;
+      }
+
+      .cursor {
+        animation: none;
+      }
+
+      .card,
+      .btn,
+      nav {
+        transition: none;
+      }
+
+      .btn:hover,
+      .btn:nth-child(even):hover {
+        transform: none;
+      }
     }
   </style>
+
 </head>
+
 <body>
 
 <canvas id="trail" aria-hidden="true"></canvas>
@@ -214,9 +543,9 @@
 <nav>
   <div class="wrap">
     <div class="links">
-      <a href="#about">about</a>
-      <a href="#projects">projects</a>
-      <a href="#contact">contact</a>
+      <a href="#about">About</a>
+      <a href="#player">Terminal Player</a>
+      <a href="#contact">Contact</a>
     </div>
   </div>
 </nav>
@@ -224,62 +553,85 @@
 <main id="top">
   <header class="hero">
     <div class="wrap">
-      <div class="term" aria-label="Terminal intro">
-        <div class="term-bar">
-          <span class="dot close"></span><span class="dot min"></span><span class="dot max"></span>
-          <span class="term-title">megapixel@dev: ~</span>
-        </div>
-        <div class="term-body" id="term"></div>
-      </div>
 
-      <h1>gabriel, aka <em>megapixel</em>.</h1>
-      <p class="sub">i write code. this is where my stuff lives.</p>
-      <div class="cta">
-        <a class="btn primary" href="#projects">see projects</a>
-        <a class="btn" href="#contact">contact me</a>
-      </div>
+```
+  <div class="term" aria-label="Terminal introduction">
+    <div class="term-bar">
+      <span class="dot close"></span>
+      <span class="dot min"></span>
+      <span class="dot max"></span>
+      <span class="term-title">megapixel@dev: ~</span>
     </div>
+    <div class="term-body" id="term"></div>
+  </div>
+
+  <h1>Gabriel, aka <em>megapixel</em>.</h1>
+  <p class="sub">I write code. This is where my stuff lives.</p>
+
+  <div class="cta">
+    <a class="btn primary" href="#player">Terminal Player</a>
+    <a class="btn" href="#contact">Contact Me</a>
+  </div>
+
+</div>
+```
+
   </header>
 
   <section id="about">
     <div class="wrap">
-      <div class="label">about</div>
-      <!-- EDIT: write this in your own words, however you'd say it to a friend -->
-      <p>i'm gabriel, i go by megapixel online. i'm a developer, and most of my projects are python stuff running on pythonanywhere.</p>
+      <div class="label">About</div>
+      <p>
+        I'm Gabriel, and I go by megapixel online. I'm a developer,
+        and most of my projects are Python applications hosted on PythonAnywhere.
+      </p>
     </div>
   </section>
-  
+
   <section id="player">
     <div class="wrap">
-      <div class="label">terminal-player</div>
-      <p>videos as ansi art, with audio, streamed straight into your terminal. pick one, copy the command, paste it.</p>
-      <div class="tabs">
-        <button class="tab" type="button" data-mode="unix">mac / linux</button>
-        <button class="tab" type="button" data-mode="win">windows</button>
-      </div>
-      <div class="note" id="os-note"></div>
-      <div id="songs"><p class="status">loading songs...</p></div>
-    </div>
+      <div class="label">Terminal Player</div>
+      <p>
+        Videos as ANSI art, with audio, streamed straight into your terminal.
+        Pick one, copy the command, and paste it.
+      </p>
+
+```
+  <div class="tabs">
+    <button class="tab" type="button" data-mode="unix">Mac / Linux</button>
+    <button class="tab" type="button" data-mode="win">Windows</button>
+  </div>
+
+  <div class="note" id="os-note"></div>
+  <div id="songs">
+    <p class="status">Loading songs...</p>
+  </div>
+</div>
+```
+
   </section>
 
   <section id="contact">
     <div class="wrap">
-      <div class="label">contact</div>
-      <p>message me anywhere below.</p>
-      <!-- EDIT: put in your real links -->
-      <div class="cta">
-        <a class="btn" href="mailto:ny348575@gmail.com">email</a>
-        <a class="btn" href="https://github.com/sdgagrafg" target="_blank" rel="noopener">github</a>
-        <a class="btn" href="https://discord.com/users/megapixelistaken" target="_blank" rel="noopener">discord</a>
-      </div>
-    </div>
+      <div class="label">Contact</div>
+      <p>Message me anywhere below.</p>
+
+```
+  <div class="cta">
+    <a class="btn" href="mailto:ny348575@gmail.com">Email</a>
+    <a class="btn" href="https://github.com/sdgagrafg" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a class="btn" href="https://discord.com/users/megapixelistaken" target="_blank" rel="noopener noreferrer">Discord</a>
+  </div>
+</div>
+```
+
   </section>
 </main>
 
 <footer>
   <div class="wrap">
     <span>© <span id="year"></span> megapixel</span>
-    <a href="#top">back to top ↑</a>
+    <a href="#top">Back to top ↑</a>
   </div>
 </footer>
 
@@ -288,13 +640,13 @@
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- terminal intro (edit the lines) ---------- */
+  /* Terminal introduction */
+
   var script = [
-    { cmd: "whoami", out: "<b>megapixel</b> (gabriel)" },
-    { cmd: "cat role.txt", out: "<b>developer</b>" },
+    { cmd: "whoami", out: "<b>megapixel</b> (Gabriel)" },
+    { cmd: "cat role.txt", out: "<b>Developer</b>" },
     { cmd: "ls projects/", out: "project-one  project-two  project-three" },
-    // EDIT: only list what you actually use
-    { cmd: "cat stack.txt", out: "<b>python</b> · <b>javascript</b> · <b>git</b> · <b>linux</b>" }
+    { cmd: "cat stack.txt", out: "<b>Python</b> · <b>JavaScript</b> · <b>Git</b> · <b>Linux</b>" }
   ];
 
   var term = document.getElementById("term");
@@ -312,17 +664,28 @@
   }
 
   function run(i) {
-    if (i >= script.length) return finish();
+    if (i >= script.length) {
+      finish();
+      return;
+    }
+
     var step = script[i];
     var line = addLine('<span class="prompt">megapixel@dev:~$</span> <span class="typed"></span>');
     var typed = line.querySelector(".typed");
     var n = 0;
+
     (function type() {
       typed.textContent = step.cmd.slice(0, ++n);
-      if (n < step.cmd.length) return setTimeout(type, 55);
+
+      if (n < step.cmd.length) {
+        return setTimeout(type, 55);
+      }
+
       setTimeout(function () {
         addLine('<span class="out">' + step.out + "</span>");
-        setTimeout(function () { run(i + 1); }, 350);
+        setTimeout(function () {
+          run(i + 1);
+        }, 350);
       }, 250);
     })();
   }
@@ -332,12 +695,14 @@
       addLine('<span class="prompt">megapixel@dev:~$</span> ' + s.cmd);
       addLine('<span class="out">' + s.out + "</span>");
     });
+
     finish();
   } else {
     run(0);
   }
 
-  /* ---------- terminal player: loads the song list from the python server ---------- */
+  /* Terminal player: load the song list from the Python server */
+
   (function () {
     var API = "https://megapixel.pythonanywhere.com";
     var box = document.getElementById("songs");
@@ -348,97 +713,184 @@
 
     function cmdFor(name) {
       var n = encodeURIComponent(name);
+
       return mode === "win"
         ? 'cmd.exe /c "curl.exe -sN ' + API + "/cmd/" + n + ' | cmd.exe /q"'
         : "curl -sN " + API + "/sh/" + n + " | bash";
     }
 
     function copy(text, btn) {
-      function done() { btn.textContent = "copied"; setTimeout(function () { btn.textContent = "copy"; }, 1500); }
-      function fail() { btn.textContent = "failed"; setTimeout(function () { btn.textContent = "copy"; }, 1500); }
+      function done() {
+        btn.textContent = "Copied";
+        setTimeout(function () {
+          btn.textContent = "Copy";
+        }, 1500);
+      }
+
+      function fail() {
+        btn.textContent = "Failed";
+        setTimeout(function () {
+          btn.textContent = "Copy";
+        }, 1500);
+      }
+
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(done, fail);
       } else {
         var t = document.createElement("textarea");
-        t.value = text; document.body.appendChild(t); t.select();
-        try { document.execCommand("copy"); done(); } catch (e) { fail(); }
+        t.value = text;
+        document.body.appendChild(t);
+        t.select();
+
+        try {
+          if (document.execCommand("copy")) {
+            done();
+          } else {
+            fail();
+          }
+        } catch (e) {
+          fail();
+        }
+
         document.body.removeChild(t);
       }
     }
 
     function render() {
       note.textContent = mode === "win"
-        ? "press win+r, paste the command, hit enter."
-        : "paste it into your terminal.";
-      tabs.forEach(function (t) { t.classList.toggle("on", t.dataset.mode === mode); });
+        ? "Press Win + R, paste the command, and press Enter."
+        : "Paste the command into your terminal.";
+
+      tabs.forEach(function (t) {
+        t.classList.toggle("on", t.dataset.mode === mode);
+      });
+
       box.textContent = "";
+
       songs.forEach(function (s) {
-        var row = document.createElement("div"); row.className = "song";
-        var nm = document.createElement("div"); nm.className = "song-name"; nm.textContent = s.name;
-        var line = document.createElement("div"); line.className = "cmd";
+        var row = document.createElement("div");
+        row.className = "song";
+
+        var nm = document.createElement("div");
+        nm.className = "song-name";
+        nm.textContent = s.name;
+
+        var line = document.createElement("div");
+        line.className = "cmd";
+
         var code = document.createElement("code");
-        var p = document.createElement("span"); p.className = "p"; p.textContent = mode === "win" ? "> " : "$ ";
+        code.tabIndex = 0;
+        code.setAttribute("aria-label", "Terminal command. Hover to show the scrollbar.");
+
+        var p = document.createElement("span");
+        p.className = "p";
+        p.textContent = mode === "win" ? "> " : "$ ";
+
         code.appendChild(p);
         code.appendChild(document.createTextNode(cmdFor(s.name)));
+
         var b = document.createElement("button");
-        b.className = "copy"; b.type = "button"; b.textContent = "copy";
-        b.addEventListener("click", function () { copy(cmdFor(s.name), b); });
-        line.appendChild(code); line.appendChild(b);
-        row.appendChild(nm); row.appendChild(line);
+        b.className = "copy";
+        b.type = "button";
+        b.textContent = "Copy";
+        b.setAttribute("aria-label", "Copy command for " + s.name);
+
+        b.addEventListener("click", function () {
+          copy(cmdFor(s.name), b);
+        });
+
+        line.appendChild(code);
+        line.appendChild(b);
+
+        row.appendChild(nm);
+        row.appendChild(line);
+
         box.appendChild(row);
       });
     }
 
     function status(msg) {
       box.textContent = "";
-      var p = document.createElement("p"); p.className = "status"; p.textContent = msg;
+
+      var p = document.createElement("p");
+      p.className = "status";
+      p.textContent = msg;
+
       box.appendChild(p);
     }
 
     tabs.forEach(function (t) {
-      t.addEventListener("click", function () { mode = t.dataset.mode; if (songs.length) render(); else render(); });
+      t.addEventListener("click", function () {
+        mode = t.dataset.mode;
+        render();
+      });
     });
 
     var ctl = new AbortController();
-    var timer = setTimeout(function () { ctl.abort(); }, 10000);
+    var timer = setTimeout(function () {
+      ctl.abort();
+    }, 10000);
+
     fetch(API + "/songs", { signal: ctl.signal })
-      .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
+      .then(function (r) {
+        if (!r.ok) {
+          throw new Error("HTTP " + r.status);
+        }
+
+        return r.json();
+      })
       .then(function (j) {
         clearTimeout(timer);
         songs = j.songs || [];
-        if (!songs.length) { render(); status("nothing here yet."); return; }
+
+        if (!songs.length) {
+          status("Nothing here yet.");
+          return;
+        }
+
         render();
       })
       .catch(function () {
         clearTimeout(timer);
-        render();
-        status("can't reach the server right now. try again in a bit.");
+        status("Can't reach the server right now. Try again in a bit.");
       });
   })();
 
-  /* ---------- autohide nav: hides on scroll down, shows on scroll up or when the mouse is near the top ---------- */
+  /* Auto-hide navigation: show on scroll up or near the top */
+
   (function () {
     var nav = document.querySelector("nav");
     var lastY = window.scrollY;
+
     window.addEventListener("scroll", function () {
       var y = window.scrollY;
-      if (y > lastY && y > 80) nav.classList.add("hide");
-      else if (y < lastY) nav.classList.remove("hide");
+
+      if (y > lastY && y > 80) {
+        nav.classList.add("hide");
+      } else if (y < lastY) {
+        nav.classList.remove("hide");
+      }
+
       lastY = y;
     }, { passive: true });
+
     window.addEventListener("pointermove", function (e) {
-      if (e.pointerType === "mouse" && e.clientY < 40) nav.classList.remove("hide");
+      if (e.pointerType === "mouse" && e.clientY < 40) {
+        nav.classList.remove("hide");
+      }
     });
   })();
 
-  /* ---------- pixel mouse trail ---------- */
+  /* Pixel mouse trail */
+
   (function () {
     if (reduce) return;
+
     var canvas = document.getElementById("trail");
     var ctx = canvas.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var GRID = 12;         // pixel size, tweak for chunkier/finer trail
-    var FADE = 0.016;      // higher = shorter trail
+    var GRID = 12;
+    var FADE = 0.016;
     var pts = [];
     var running = false;
     var lastCell = "";
@@ -448,55 +900,89 @@
       canvas.height = window.innerHeight * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+
     resize();
     window.addEventListener("resize", resize);
 
-    var lastX = null, lastY = null;
+    var lastX = null;
+    var lastY = null;
 
     function addCell(x, y) {
       var cx = Math.floor(x / GRID) * GRID;
       var cy = Math.floor(y / GRID) * GRID;
       var key = cx + "," + cy;
+
       if (key === lastCell) return;
+
       lastCell = key;
       pts.push({ x: cx, y: cy, life: 1 });
     }
 
     window.addEventListener("pointermove", function (e) {
       if (e.pointerType !== "mouse") return;
-      // fill the gaps when the mouse moves fast
+
       if (lastX !== null) {
-        var dx = e.clientX - lastX, dy = e.clientY - lastY;
+        var dx = e.clientX - lastX;
+        var dy = e.clientY - lastY;
         var steps = Math.min(40, Math.ceil(Math.hypot(dx, dy) / (GRID / 2)));
-        for (var i = 1; i <= steps; i++) addCell(lastX + dx * i / steps, lastY + dy * i / steps);
+
+        for (var i = 1; i <= steps; i++) {
+          addCell(
+            lastX + dx * i / steps,
+            lastY + dy * i / steps
+          );
+        }
       } else {
         addCell(e.clientX, e.clientY);
       }
-      lastX = e.clientX; lastY = e.clientY;
-      if (!running && pts.length) { running = true; requestAnimationFrame(tick); }
+
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      if (!running && pts.length) {
+        running = true;
+        requestAnimationFrame(tick);
+      }
     });
-    document.addEventListener("mouseleave", function () { lastX = null; lastY = null; });
+
+    document.addEventListener("mouseleave", function () {
+      lastX = null;
+      lastY = null;
+    });
 
     function tick() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       for (var i = pts.length - 1; i >= 0; i--) {
         var p = pts[i];
         p.life -= FADE;
-        if (p.life <= 0) { pts.splice(i, 1); continue; }
+
+        if (p.life <= 0) {
+          pts.splice(i, 1);
+          continue;
+        }
+
         var s = GRID * p.life;
         var off = (GRID - s) / 2;
+
         ctx.globalAlpha = p.life * 0.75;
         ctx.shadowColor = "rgba(255, 59, 71, 0.45)";
         ctx.shadowBlur = 6;
         ctx.fillStyle = "#e0343f";
         ctx.fillRect(p.x + off, p.y + off, s, s);
       }
+
       ctx.shadowBlur = 0;
       ctx.globalAlpha = 1;
-      if (pts.length) requestAnimationFrame(tick);
-      else running = false;
+
+      if (pts.length) {
+        requestAnimationFrame(tick);
+      } else {
+        running = false;
+      }
     }
   })();
 </script>
+
 </body>
 </html>

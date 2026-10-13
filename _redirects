@@ -1,0 +1,11 @@
+/songs https://megapixel-is-a-dev.ny348575.workers.dev/songs 302
+/sh/* https://megapixel-is-a-dev.ny348575.workers.dev/sh/:splat 302
+/cmd/* https://megapixel-is-a-dev.ny348575.workers.dev/cmd/:splat 302
+/ps1/* https://megapixel-is-a-dev.ny348575.workers.dev/ps1/:splat 302
+/frames/* https://megapixel-is-a-dev.ny348575.workers.dev/frames/:splat 302
+/audio/* https://megapixel-is-a-dev.ny348575.workers.dev/audio/:splat 302
+/health https://megapixel-is-a-dev.ny348575.workers.dev/health 302
+/whoami https://megapixel-is-a-dev.ny348575.workers.dev/whoami 302
+/manage https://megapixel-is-a-dev.ny348575.workers.dev/manage 302
+/add https://megapixel-is-a-dev.ny348575.workers.dev/add 302
+/debug-meta https://megapixel-is-a-dev.ny348575.workers.dev/debug-meta 302

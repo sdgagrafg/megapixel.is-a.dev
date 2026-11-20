@@ -51,8 +51,19 @@
   .big-body { padding: 28px 20px; }
   #big { font: 700 24px var(--mono); margin: 0 0 6px; }
   #bigsub { color: var(--muted); min-height: 1.5em; }
-  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 14px auto 0; max-width: 420px; }
-  .bar > div { height: 100%; width: 0; background: var(--accent); transition: width .25s linear; }
+  /* seek bar: click or drag to jump (like YouTube) */
+  .seek { position: relative; max-width: 520px; margin: 10px auto 0; padding: 9px 0; cursor: pointer; touch-action: none; outline: none; }
+  .seek .bar { position: relative; height: 5px; background: var(--line); border-radius: 3px; transition: height .12s ease; }
+  .seek:hover .bar, .seek.drag .bar, .seek:focus-visible .bar { height: 9px; }
+  .bar > div { height: 100%; width: 0; background: var(--accent); border-radius: 3px; }
+  .seek .knob { position: absolute; top: 50%; left: 0; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; border-radius: 50%;
+                background: var(--accent); transform: scale(0); transition: transform .12s ease; pointer-events: none; }
+  .seek:hover .knob, .seek.drag .knob, .seek:focus-visible .knob { transform: scale(1); }
+  .seek .tip { position: absolute; bottom: 24px; left: 0; transform: translateX(-50%); padding: 2px 7px; border-radius: 6px;
+               background: var(--ink); color: var(--bg); font: 600 12px var(--mono); opacity: 0; pointer-events: none; white-space: nowrap; }
+  .seek:hover .tip, .seek.drag .tip { opacity: 1; }
+  .seek.off { cursor: default; } .seek.off .knob, .seek.off .tip { display: none; }
+  .times { display: flex; justify-content: space-between; max-width: 520px; margin: 0 auto; font: 12px var(--mono); color: var(--muted); }
   button { font: 500 15px var(--mono); border: 1px solid var(--accent); border-radius: 12px; padding: 13px 26px; cursor: pointer;
            background: var(--accent); color: var(--accent-ink);
            transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s ease, border-color .2s ease, color .2s ease; }
@@ -117,7 +128,12 @@
     <div class="big-body">
       <div id="big">Press Start</div>
       <div id="bigsub">Controller on a USB cable, in the middle of the table.</div>
-      <div class="bar"><div id="barfill"></div></div>
+      <div class="seek off" id="seek" role="slider" tabindex="0" aria-label="Song position" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+        <div class="bar"><div id="barfill"></div></div>
+        <div class="knob" id="knob"></div>
+        <div class="tip" id="seektip">0:00</div>
+      </div>
+      <div class="times"><span id="t-now">0:00</span><span id="t-len">0:00</span></div>
     </div>
   </section>
 
@@ -764,7 +780,7 @@ function refresh() {
   else if (lastStop && lastStop !== "finished") { setBig("Paused at " + fmt(A.offset), lastStop + ". Put it down to continue."); }
   else if (lastStop === "finished") { setBig("Song finished", "Pick it up and put it down to play again."); }
   else setBig("Ready", "Put the controller down in the middle of the table.");
-  $("barfill").style.width = A.buffer ? (100 * position() / A.buffer.duration).toFixed(2) + "%" : "0";
+  drawSeek();
 }
 setInterval(() => { if (A.playing) refresh(); }, 250);
 P.motion.canPlay = () => !!(A.buffer && A.ready);
@@ -779,6 +795,48 @@ $("btn-start").addEventListener("click", async () => {
   refresh();
 });
 $("btn-file").addEventListener("click", () => $("file").click());
+
+/* seek bar: click / drag / arrow keys, like YouTube */
+let dragT = null;                                       // time shown while dragging (null = not dragging)
+function drawSeek() {
+  const d = A.buffer ? A.buffer.duration : 0, t = dragT !== null ? dragT : (A.buffer ? position() : 0);
+  const p = d ? Math.max(0, Math.min(1, t / d)) : 0;
+  $("barfill").style.width = (100 * p).toFixed(2) + "%";
+  $("knob").style.left = (100 * p).toFixed(2) + "%";
+  $("t-now").textContent = fmt(t); $("t-len").textContent = fmt(d);
+  const s = $("seek"); s.classList.toggle("off", !d);
+  s.setAttribute("aria-valuemax", Math.round(d)); s.setAttribute("aria-valuenow", Math.round(t));
+  s.setAttribute("aria-valuetext", `${fmt(t)} of ${fmt(d)}`);
+}
+function seekTo(t) {
+  if (!A.buffer) return;
+  t = Math.max(0, Math.min(A.buffer.duration - 0.05, t));
+  if (A.playing) { pause(); A.offset = t; play(false); } else A.offset = t;
+  if (lastStop === "finished") lastStop = "";
+  log("⏩ jumped to", fmt(t));
+  refresh();
+}
+(() => {
+  const s = $("seek");
+  const timeAt = x => { const r = s.getBoundingClientRect(); return Math.max(0, Math.min(1, (x - r.left) / r.width)) * A.buffer.duration; };
+  const tipAt = x => { const r = s.getBoundingClientRect(), t = timeAt(x);
+    $("seektip").textContent = fmt(t); $("seektip").style.left = Math.max(18, Math.min(r.width - 18, x - r.left)) + "px"; return t; };
+  s.addEventListener("pointermove", e => { if (!A.buffer) return; const t = tipAt(e.clientX); if (dragT !== null) { dragT = t; drawSeek(); } });
+  s.addEventListener("pointerdown", e => {
+    if (!A.buffer || e.button !== 0) return;
+    s.setPointerCapture(e.pointerId); s.classList.add("drag"); dragT = tipAt(e.clientX); drawSeek();
+  });
+  const end = e => { if (dragT === null) return; const t = dragT; dragT = null; s.classList.remove("drag"); seekTo(t); };
+  s.addEventListener("pointerup", end);
+  s.addEventListener("pointercancel", () => { dragT = null; s.classList.remove("drag"); drawSeek(); });
+  s.addEventListener("keydown", e => {
+    if (!A.buffer) return;
+    const step = { ArrowLeft: -5, ArrowRight: 5, ArrowDown: -5, ArrowUp: 5 }[e.key];
+    if (step) { e.preventDefault(); seekTo(position() + step); }
+    else if (e.key === "Home") { e.preventDefault(); seekTo(0); }
+    else if (e.key === "End") { e.preventDefault(); seekTo(A.buffer.duration - 1); }
+  });
+})();
 // ready songs hosted next to this page (voice + music stems), nothing to upload
 $("preset").addEventListener("change", async e => {
   const url = e.target.value, title = e.target.selectedOptions[0].textContent;

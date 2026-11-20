@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  DualSense Table Song - put a PS5 controller on a table and the table plays your song.
+  RumbleSound - put a PS5 controller on a table and the table plays your song.
   Single static page: host it anywhere (GitHub Pages, Netlify, Cloudflare Pages). No server code.
   Needs Chrome or Edge on a computer (WebHID + audio output selection), controller on USB.
   Your song never leaves your computer: it is read from a local file and remembered in this
@@ -10,7 +10,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Table Song | megapixel</title>
+<title>RumbleSound | megapixel</title>
 <meta name="theme-color" content="#0a0a0b">
 <script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,18 +99,18 @@
   <div class="links">
     <a href="/#about">About</a>
     <a href="/#player">Terminal Player</a>
-    <a href="/#tablesong">Table Song</a>
+    <a href="/#rumblesound">RumbleSound</a>
     <a href="/#contact">Contact</a>
   </div>
 </nav>
 <main>
-  <h1>DualSense <em>Table Song</em></h1>
+  <h1><em>RumbleSound</em></h1>
   <p class="sub">Put your PS5 controller on the table, and the table plays your song.</p>
 
   <div class="card" id="envwarn" role="alert" hidden></div>
 
   <section class="card big" aria-live="polite">
-    <div class="term-bar"><span class="tdot c"></span><span class="tdot m"></span><span class="tdot x"></span><span>megapixel@dev: ~/tablesong</span></div>
+    <div class="term-bar"><span class="tdot c"></span><span class="tdot m"></span><span class="tdot x"></span><span>megapixel@dev: ~/rumblesound</span></div>
     <div class="big-body">
       <div id="big">Press Start</div>
       <div id="bigsub">Controller on a USB cable, in the middle of the table.</div>
@@ -794,7 +794,7 @@ if ("hid" in navigator) {
     `<p><b>This page is open as a file</b> (its address starts with <code>file:///</code>). That works only while
      <b>DualSense Wireless Controller</b> is your Windows default output (<b>Win + Ctrl + V</b>), because browsers hide
      the other sound devices from files.</p>
-     <p class="hint">Or open it from its web address: <a href="https://megapixel.is-a.dev/tablesong/"><code>megapixel.is-a.dev/tablesong</code></a>.</p>`;
+     <p class="hint">Or open it from its web address: <a href="https://megapixel.is-a.dev/rumblesound/"><code>megapixel.is-a.dev/rumblesound</code></a>.</p>`;
   else if (inApp) html = `<p><b>This page is open inside another app.</b> Open it directly in Chrome, Edge or Chromium:
      copy this page's address into the browser's address bar.</p>`;
   else if (!("hid" in navigator)) html = `<p><b>This browser can't talk to the controller.</b> Use Chrome, Edge or

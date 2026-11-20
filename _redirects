@@ -12,5 +12,7 @@
 /justclickthelink /justclickthelink.html 200
 /iphone-parantel /iphone-parantel/ 301
 /nuvio /nuvio/ 301
-/tablesong /tablesong/ 301
+/rumblesound /rumblesound/ 301
+/tablesong /rumblesound/ 301
+/tablesong/* /rumblesound/ 301
 /:song https://megapixel-is-a-dev.ny348575.workers.dev/auto/:song 302

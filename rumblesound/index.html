@@ -152,7 +152,7 @@
       <input type="range" id="vol" min="0.3" max="1" step="0.05" value="1">
       <label for="backing">Voice vs. music <span class="hint" id="backing-v"></span></label>
       <input type="range" id="backing" min="-20" max="0" step="1" value="-10">
-      <div class="hint">Lower = more voice, less background. −10 dB = the mix you approved.</div>
+      <div class="hint">Lower = more voice, less background.</div>
       <div class="row" style="margin-top:8px">
         <button class="secondary" id="btn-regen" type="button" disabled>Regenerate with this balance</button>
         <span class="hint" id="regen-hint"></span>
@@ -686,7 +686,7 @@ async function loadFile(file) {
   }
   await useMix(mono, sr, name);
   if (!premade && (!SRC || SRC.kind !== "stems"))       // the voice can't really be raised for this file
-    setStep("song", "warn", `${name}: the voice can't be raised for this file${SRC ? " much" : ""}. For the lyrics on top, choose “Never_Gonna_Give_You_Up (DualSense stems).flac”.`);
+    setStep("song", "warn", `${name} isn't a stems FLAC, so the voice can't be raised. For the lyrics on top, choose a “(DualSense stems).flac” file.`);
   try { await DB.put(SRC && { kind: SRC.kind, name, sr, L: toI16(SRC.L), R: toI16(SRC.R) }, "source"); }
   catch (e) { log("could not store the source for remixing:", e.message); }
   updateRegen();
@@ -701,7 +701,7 @@ async function restoreSong() {
     const src = await DB.get("source");
     if (src) SRC = { kind: src.kind, name: src.name, sr: src.sr, L: toF32(src.L), R: toF32(src.R) };
     if (!/dualsense (table mix|stems)/i.test(s.name))
-      setStep("song", "warn", `${s.name}: the voice can't be raised for this file. For the lyrics on top, choose “Never_Gonna_Give_You_Up (DualSense stems).flac”.`);
+      setStep("song", "warn", `${s.name} isn't a stems FLAC, so the voice can't be raised. For the lyrics on top, choose a “(DualSense stems).flac” file.`);
   } catch (e) { log("no stored song:", e.message); }
   updateRegen();
 }
@@ -816,6 +816,15 @@ if ("hid" in navigator) {
   } catch (e) { log("auto-connect:", e.message); }
   refresh();
 })();
+
+// inside the homepage: pass mouse movement up so the homepage's pixel trail keeps drawing over this section
+if (document.documentElement.classList.contains("embed") && !framed && window.frameElement) {
+  window.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse") return;
+    const r = window.frameElement.getBoundingClientRect(), P2 = window.parent.PointerEvent;
+    window.parent.dispatchEvent(new P2("pointermove", { clientX: e.clientX + r.left, clientY: e.clientY + r.top, pointerType: "mouse" }));
+  }, { passive: true });
+}
 
 // top bar: hide on scroll down, show on scroll up or near the top (same as the homepage)
 (() => {

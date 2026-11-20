@@ -134,9 +134,8 @@
       Windows default sound output (press <b>Win + Ctrl + V</b> and pick it). Some browsers ignore the page's choice and
       always use the default output, so otherwise the song plays in your headphones instead of rumbling the controller.
       Switch back when you're done.</p>
-    <p class="hint" style="margin:12px 0 0">The browser will ask to pick the controller, and for microphone
-      permission. The microphone permission only reveals your audio devices' names so the page can find the controller.
-      Nothing is recorded.</p>
+    <p class="hint" style="margin:12px 0 0">The browser will ask you to pick the controller. For the voice-vs-music
+      slider, choose the “(DualSense stems)” file.</p>
   </section>
 
   <details>
@@ -458,36 +457,16 @@ function ensureContext() {
 
 const isPadLabel = l => /wireless controller|dualsense|054c:0(ce6|df2)/i.test(l || "");
 
+// No microphone: the song goes to the Windows default output, which must be the controller
+// (4 channels; 3+4 drive the motors). Some browsers ignore a chosen output anyway.
 async function setupOutput() {
-  const ctx = ensureContext();
-  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || typeof ctx.setSinkId !== "function")
-    throw new Error("This browser can't send sound to the controller. Use Chrome, Edge or Chromium.");
-  const outputs = async () => (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "audiooutput");
-  let outs = await outputs();
-  if (!outs.some(d => d.label) && location.protocol !== "file:") {   // names stay hidden until a media permission is granted
-    try {
-      const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-      s.getTracks().forEach(t => t.stop());
-    } catch (e) {
-      if (e.name === "NotAllowedError") throw new Error("Microphone permission is blocked, so the page can't see the sound devices' names (nothing is recorded). Click the icon left of the web address → Microphone → Allow, then press Start again.");
-      throw new Error("Couldn't read the sound devices (" + e.message + ").");
-    }
-    outs = await outputs();
+  let ctx = ensureContext();
+  if (ctx.destination.maxChannelCount < 4 && !A.playing) {   // default may have changed since the page opened
+    try { await ctx.close(); } catch (e) {}
+    A.ctx = null; ctx = ensureContext();
   }
-  log("sound devices:", outs.map(d => d.label || "?").join(" | "));
-  // skip Windows' "Default" and "Communications" entries: they only point at whatever device is default right now
-  const dev = outs.find(d => d.deviceId !== "default" && d.deviceId !== "communications" && isPadLabel(d.label));
-  if (dev) {
-    await ctx.setSinkId(dev.deviceId);
-    return routeOutput(dev.label.replace(/\s*\([0-9a-f]{4}:[0-9a-f]{4}\)\s*$/i, ""));
-  }
-  if (!outs.some(d => d.label)) {     // opened as a file: names hidden, only the Windows default output is reachable
-    if (ctx.destination.maxChannelCount >= 4) return routeOutput("Windows default output (4 channels: the controller)");
-    throw new Error(location.protocol === "file:"
-      ? "Opened as a file, the browser hides the sound devices, so it can't reach the controller's motors. Open the page from its web address instead (see the yellow box at the top)."
-      : "The browser hides the sound devices' names. Use Chrome, Edge or Chromium.");
-  }
-  throw new Error("The controller's sound device isn't there. It needs a USB cable (Bluetooth carries no sound). In Windows sound settings it should be listed as “DualSense Wireless Controller”.");
+  if (ctx.destination.maxChannelCount >= 4) return routeOutput("Windows default output (the controller)");
+  throw new Error("Your Windows default sound output isn't the controller. Press Win + Ctrl + V, pick “DualSense Wireless Controller”, then press Start again.");
 }
 
 function routeOutput(label) {
@@ -699,6 +678,8 @@ async function loadFile(file) {
     mono = await makeMix(SRC, backing, "preparing");
   }
   await useMix(mono, sr, name);
+  if (!premade && (!SRC || SRC.kind !== "stems"))       // the voice can't really be raised for this file
+    setStep("song", "warn", `${name}: the voice can't be raised for this file${SRC ? " much" : ""}. For the lyrics on top, choose “Never_Gonna_Give_You_Up (DualSense stems).flac”.`);
   try { await DB.put(SRC && { kind: SRC.kind, name, sr, L: toI16(SRC.L), R: toI16(SRC.R) }, "source"); }
   catch (e) { log("could not store the source for remixing:", e.message); }
   updateRegen();
@@ -712,6 +693,8 @@ async function restoreSong() {
     log("restored song from this browser:", s.name);
     const src = await DB.get("source");
     if (src) SRC = { kind: src.kind, name: src.name, sr: src.sr, L: toF32(src.L), R: toF32(src.R) };
+    if (!/dualsense (table mix|stems)/i.test(s.name))
+      setStep("song", "warn", `${s.name}: the voice can't be raised for this file. For the lyrics on top, choose “Never_Gonna_Give_You_Up (DualSense stems).flac”.`);
   } catch (e) { log("no stored song:", e.message); }
   updateRegen();
 }

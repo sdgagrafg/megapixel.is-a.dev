@@ -12,6 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Table Song | megapixel</title>
 <meta name="theme-color" content="#0a0a0b">
+<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -69,6 +70,9 @@
   footer div { max-width: 880px; margin: 0 auto; padding: 22px 20px; display: flex; justify-content: space-between;
                font: 13px var(--mono); color: var(--muted); }
   footer a { text-decoration: none; } footer a:hover { color: var(--accent); }
+  /* ?embed: shown as a section of the homepage - no page chrome of its own */
+  .embed nav, .embed footer, .embed main > h1, .embed main > .sub { display: none; }
+  .embed main { max-width: none; padding: 0; } .embed body { background: transparent; overflow: hidden; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .steps { list-style: none; padding: 0; margin: 14px 0 0; }
   .steps li { display: flex; gap: 10px; align-items: baseline; padding: 4px 0; }
@@ -95,8 +99,7 @@
   <div class="links">
     <a href="/#about">About</a>
     <a href="/#player">Terminal Player</a>
-    <a href="/nuvio/">Nuvio</a>
-    <a href="/tablesong/">Table Song</a>
+    <a href="/#tablesong">Table Song</a>
     <a href="/#contact">Contact</a>
   </div>
 </nav>
@@ -207,7 +210,8 @@ function setStep(which, cls, text) {
   if (cls === "bad") ERR[which] = text; else delete ERR[which];
 }
 // places where the page can't fully work
-const framed = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+// framed by another site/app; being a section of our own homepage (same origin) is fine
+const framed = (() => { try { return window.self !== window.top && window.top.location.origin !== location.origin; } catch (e) { return true; } })();
 const inApp = framed || /Electron\/|Claude\//.test(navigator.userAgent);   // app previews can't show the device box
 function setBig(t, sub) { $("big").textContent = t; if (sub !== undefined) $("bigsub").textContent = sub; }
 

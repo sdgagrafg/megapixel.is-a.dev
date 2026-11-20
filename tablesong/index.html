@@ -30,12 +30,13 @@
          -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   a { color: inherit; }
   nav { position: sticky; top: 0; z-index: 10; background: rgba(10, 10, 11, 0.85); backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--line); }
+        border-bottom: 1px solid var(--line); transition: transform .3s ease; }
+  nav.hide { transform: translateY(-100%); }
   .links { display: flex; height: 38px; font: 500 13px var(--mono); color: var(--muted); }
   .links a { flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none;
              border-left: 1px solid var(--line); transition: background .2s ease, color .2s ease; }
   .links a:first-child { border-left: none; }
-  .links a:hover, .links a:focus-visible, .links a[aria-current] { color: var(--accent); background: var(--red-dim); }
+  .links a:hover, .links a:focus-visible { color: var(--accent); background: var(--red-dim); }
   main { max-width: 880px; margin: 0 auto; padding: 48px 20px 64px; }
   h1 { font-size: clamp(32px, 6vw, 48px); line-height: 1.1; margin: 0 0 10px; letter-spacing: -0.03em; font-weight: 700; }
   h1 em { font-style: normal; color: var(--accent); }
@@ -92,10 +93,11 @@
 <body>
 <nav>
   <div class="links">
-    <a href="/">Home</a>
+    <a href="/#about">About</a>
     <a href="/#player">Terminal Player</a>
     <a href="/nuvio/">Nuvio</a>
-    <a href="/tablesong/" aria-current="page">Table Song</a>
+    <a href="/tablesong/">Table Song</a>
+    <a href="/#contact">Contact</a>
   </div>
 </nav>
 <main>
@@ -806,6 +808,17 @@ if ("hid" in navigator) {
     }
   } catch (e) { log("auto-connect:", e.message); }
   refresh();
+})();
+
+// top bar: hide on scroll down, show on scroll up or near the top (same as the homepage)
+(() => {
+  const nav = document.querySelector("nav"); let lastY = window.scrollY;
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+    if (y > lastY && y > 80) nav.classList.add("hide"); else if (y < lastY) nav.classList.remove("hide");
+    lastY = y;
+  }, { passive: true });
+  window.addEventListener("pointermove", e => { if (e.pointerType === "mouse" && e.clientY < 40) nav.classList.remove("hide"); });
 })();
 
 window.TS = { makeFFT, buildEQ, tableProcess, compress, highpass70, limitInPlace, renderSong, MotionLogic, reportBytes };

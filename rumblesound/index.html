@@ -511,8 +511,13 @@ async function setupOutput() {
     try { await ctx.close(); } catch (e) {}
     A.ctx = null; ctx = ensureContext();
   }
-  if (ctx.destination.maxChannelCount >= 4) return routeOutput("Windows default output (the controller)");
-  throw new Error("Your Windows default sound output isn't the controller. Press Win + Ctrl + V, pick “DualSense Wireless Controller”, then press Start again.");
+  const n = ctx.destination.maxChannelCount;
+  log("the default sound output gives this page " + n + " channel(s); the rumble needs 4");
+  if (n >= 4) return routeOutput("Windows default output (the controller)");
+  throw new Error(`The default sound output gives this page only ${n} channel${n === 1 ? "" : "s"}, and the rumble needs 4. ` +
+    "Make “DualSense Wireless Controller” your default output (click the speaker icon by the clock and pick it). " +
+    "If it already is: use a USB data cable in a port directly on the PC, and in Windows sound settings open the controller → Properties → Advanced and pick a 4-channel format if there is one. " +
+    "Then reload this page and press Start.");
 }
 
 function routeOutput(label) {

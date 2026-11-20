@@ -158,6 +158,8 @@
         <button class="secondary" id="btn-regen" type="button" disabled>Regenerate with this balance</button>
         <span class="hint" id="regen-hint"></span>
       </div>
+      <label><input type="checkbox" id="keep"> Keep playing when picked up or moved
+        <span class="hint">(it still stops if it falls)</span></label>
       <label><input type="checkbox" id="restart"> Always start from the beginning when put down</label>
       <label><input type="checkbox" id="debug"> Show motion values in the log</label>
     </div>
@@ -272,10 +274,25 @@ function buildEQ(N, sr) {
     const f = Math.max(k * sr / N, 1e-3);
     const bp = (1 / (1 + Math.pow(95 / f, 8))) * (1 / (1 + Math.pow(f / 600, 8)));   // |H|^2 of 4th-order edges
     let c = interp(f); if (f > 560) c = Math.min(c, 0);
+    c += rattleDb(f);
     const shelf = f < 130 ? 0.5 : f < 200 ? 0.5 + 0.5 * (f - 130) / 70 : 1;           // -6 dB below 130 Hz
     g[k] = bp * Math.pow(10, c / 20) * shelf;
   }
   return g;
+}
+
+// Where the controller buzzes against the table instead of playing the tone (picked by ear, "version 3"):
+// about 130-190 Hz and 280-365 Hz turned down 10 dB, everything above 500 Hz 12 dB. Soft edges.
+function rattleDb(f) {
+  const soft = (lo, hi, w) => {                       // 1 inside [lo, hi], cosine ramp over a ratio of w outside
+    const a = lo / w, b = hi * w;
+    if (f <= a || f >= b) return 0;
+    if (f >= lo && f <= hi) return 1;
+    const t = f < lo ? Math.log(f / a) / Math.log(lo / a) : Math.log(b / f) / Math.log(b / hi);
+    return 0.5 - 0.5 * Math.cos(Math.PI * t);
+  };
+  const top = f >= 500 ? 1 : f <= 435 ? 0 : 0.5 - 0.5 * Math.cos(Math.PI * Math.log(f / 435) / Math.log(500 / 435));
+  return -10 * soft(130, 190, 1.15) - 10 * soft(280, 365, 1.15) - 12 * top;
 }
 
 /** Stereo song -> mono "table mix": voice-forward center extraction + table EQ (STFT, 2048/512). */
@@ -375,7 +392,7 @@ async function renderSong(L, R, sr, backingDb, onProgress) {
   let pk = 1e-9; for (let i = 0; i < x.length; i++) pk = Math.max(pk, Math.abs(x[i]));
   for (let i = 0; i < x.length; i++) x[i] = 0.9 * x[i] / pk;
   x = highpass70(x, sr);
-  for (let i = 0; i < x.length; i++) x[i] *= 2.0;              // drive (same as the PC app)
+  for (let i = 0; i < x.length; i++) x[i] *= 0.85;             // drive: less pushed = no distortion (picked by ear)
   limitInPlace(x);
   const fo = Math.min(x.length, Math.round(0.03 * sr));
   for (let i = 0; i < fo; i++) x[x.length - 1 - i] *= i / fo;
@@ -425,7 +442,7 @@ class MotionLogic {
       }
     } else if (this.state === "settling") {
       if (now - this.tState > 0.6) {
-        if (Math.abs(lpMag - 1) < 0.12) {
+        if (Math.abs(lpMag - 1) < 0.12 || this.keep) {
           const n = v3.norm(this.lp); this.gUnit = this.lp.map(v => v / n);
           this.yaw = 0; this.badSince = null; this.go("playing", now);
         } else { act = { type: "pause", why: "not resting on the table" }; this.go("idle", now); }
@@ -436,7 +453,8 @@ class MotionLogic {
       const cosang = v3.dot(this.lp, this.gUnit) / (v3.norm(this.lp) + 1e-9);
       this.tilt = Math.acos(Math.max(-1, Math.min(1, cosang))) * 180 / Math.PI;
       let why = null;
-      if (lpMag < 0.6) why = "falling";
+      if (lpMag < 0.6) why = "falling";                         // always stops, even with "keep playing"
+      else if (this.keep) { this.yaw = 0; this.badSince = null; } // switch on: picking up / turning doesn't pause
       else if (Math.abs(this.yaw) > this.yawLimit) why = "it started turning (walking) - put it back in the middle";
       else if (this.tilt > this.tiltLimit || lpMag > 1.5) {
         if (this.badSince === null) this.badSince = now;
@@ -781,6 +799,14 @@ $("btn-test").addEventListener("click", () => {
 $("vol").addEventListener("input", e => { if (A.master) A.master.gain.value = +e.target.value; $("vol-v").textContent = Math.round(100 * e.target.value) + "%"; });
 $("backing").addEventListener("input", e => { $("backing-v").textContent = e.target.value + " dB"; });
 $("btn-regen").addEventListener("click", regenerate);
+// "keep playing when picked up": remembered in this browser
+try { $("keep").checked = localStorage.getItem("rs-keep") === "1"; } catch (e) {}
+P.motion.keep = $("keep").checked;
+$("keep").addEventListener("change", e => {
+  P.motion.keep = e.target.checked;
+  try { localStorage.setItem("rs-keep", e.target.checked ? "1" : "0"); } catch (err) {}
+  log(e.target.checked ? "keep playing when picked up: ON" : "keep playing when picked up: OFF");
+});
 $("vol-v").textContent = "100%"; $("backing-v").textContent = "-10 dB";
 if ("hid" in navigator) {
   navigator.hid.addEventListener("disconnect", e => {
